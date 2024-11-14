@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var timerBinder : TimerService.TimerBinder
     var isConnected = false
+    var isPaused = false
 
     val timerHandler = Handler(Looper.getMainLooper()) {
         timerTextView.text = it.what.toString()
@@ -48,11 +49,23 @@ class MainActivity : AppCompatActivity() {
         timerTextView = findViewById(R.id.textView)
 
         findViewById<Button>(R.id.startButton).setOnClickListener {
-            if (isConnected) timerBinder.start(100)
+            if (isConnected) {
+                if (isPaused) {
+                    timerBinder.pause()
+                    isPaused = false
+                }
+                else {
+                    timerBinder.start(100)
+                    isPaused = true
+                }
+            }
         }
         
         findViewById<Button>(R.id.stopButton).setOnClickListener {
-            if (isConnected) timerBinder.pause()
+            if (isConnected) {
+                timerBinder.stop()
+                isPaused = false
+            }
         }
     }
 
